@@ -33,7 +33,7 @@ session_start()
         <?php
             $bdd = mysqli_connect('localhost', 'root', '', 'livreor');
             mysqli_set_charset($bdd, 'utf8');
-            $requete = mysqli_query($bdd, "SELECT commentaires.commentaire, commentaires.date, utilisateurs.login FROM utilisateurs INNER JOIN commentaires WHERE utilisateurs.id = commentaires.id_utilisateur");
+            $requete = mysqli_query($bdd, "SELECT * FROM utilisateurs INNER JOIN commentaires WHERE utilisateurs.id = commentaires.id_utilisateur ORDER BY commentaires.date DESC");
             $comment = mysqli_fetch_all($requete, MYSQLI_ASSOC);
                 foreach($comment as $valeur => $commentaires){
                     echo '<div id ="table">

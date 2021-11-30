@@ -9,6 +9,9 @@
         $id = $_SESSION['utilisateurs']['id'];
         $requete = mysqli_query($bdd,"INSERT INTO commentaires(commentaire, id_utilisateur, date) VALUES ('$comment', '$id', '$date')");
     }
+    if (isset($_POST['comment'])){
+        header('Location: livre-or.php');
+    }
     if (empty($_SESSION)){
         header('Location: index.php');
         exit();
@@ -49,7 +52,7 @@
                             <label for="commentaire">Commentaire</label>
                             <input type="text" id="commentaire" name="commentaire">
 
-                            <input type="submit" value="Poster">
+                            <input type="submit" name="comment" value="Poster">
                 </form>
             </div>
         </div>
