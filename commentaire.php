@@ -4,9 +4,14 @@
     mysqli_set_charset($bdd, 'utf8');
     if (isset($_POST['commentaire']) && !empty($_POST['commentaire'])){
         $comment = $_POST['commentaire'];
+        date_default_timezone_set('Europe/Paris');
         $date = date('Y-m-d H:i:s');
         $id = $_SESSION['utilisateurs']['id'];
         $requete = mysqli_query($bdd,"INSERT INTO commentaires(commentaire, id_utilisateur, date) VALUES ('$comment', '$id', '$date')");
+    }
+    if (empty($_SESSION)){
+        header('Location: index.php');
+        exit();
     }
 ?>
 <!DOCTYPE html>
@@ -20,24 +25,33 @@
 </head>
 <body>
 <header>
-    <h1><em>Demon Slayer</em></h1>
+    <h1><em>Commentaire</em></h1>
         <ul>
             <li><a href="index.php">Accueil</a></li>
-            <li><a href="inscription.php">Inscription</a></li>
-            <li><a href="connexion.php">Connexion</a></li>'
-            <li><a href="commentaire.php">Commentaire</a></li>
             <li><a href="livre-or.php">Livre d'or</a></li>
-            <li><a href="profil.php">Mon profil</a></li>
+            <?php
+                if(empty($_SESSION)){
+                   echo '<li><a href="inscription.php">Inscription</a></li>
+                    <li><a href="connexion.php">Connexion</a></li>';
+                }
+                else{
+                    echo '<li><a href="commentaire.php">Commentaire</a></li>
+                    <li><a href="profil.php">Mon profil</a></li>
+                    <li><a href="deconnexion.php">Deconnexion</a></li>';
+                }
+            ?>
         </ul>
     </header>
     <main>
-        <div class = "commentaire">
-            <form action="commentaire.php" method="post">
-                        <label for="commentaire">Commentaire</label>
-                        <input type="text" id="commentaire" name="commentaire">
+        <div class = "centre">
+            <div class = "inscription">
+                <form action="commentaire.php" method="post">
+                            <label for="commentaire">Commentaire</label>
+                            <input type="text" id="commentaire" name="commentaire">
 
-                        <input type="submit" value="Poster">
-            </form>
+                            <input type="submit" value="Poster">
+                </form>
+            </div>
         </div>
     </main>
     <footer>

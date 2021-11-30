@@ -12,36 +12,52 @@ session_start()
 </head>
 <body>
     <header>
-    <h1><em>Demon Slayer</em></h1>
+    <h1><em>Le livre d'or</em></h1>
         <ul>
             <li><a href="index.php">Accueil</a></li>
-            <li><a href="inscription.php">Inscription</a></li>
-            <li><a href="connexion.php">Connexion</a></li>'
-            <li><a href="commentaire.php">Commentaire</a></li>
             <li><a href="livre-or.php">Livre d'or</a></li>
-            <li><a href="profil.php">Mon profil</a></li>
+            <?php
+                if(empty($_SESSION)){
+                   echo '<li><a href="inscription.php">Inscription</a></li>
+                    <li><a href="connexion.php">Connexion</a></li>';
+                }
+                else{
+                    echo '<li><a href="commentaire.php">Commentaire</a></li>
+                    <li><a href="profil.php">Mon profil</a></li>
+                    <li><a href="deconnexion.php">Deconnexion</a></li>';
+                }
+            ?>
         </ul>
     </header>
 <main>
         <?php
             $bdd = mysqli_connect('localhost', 'root', '', 'livreor');
             mysqli_set_charset($bdd, 'utf8');
-            $requete = mysqli_query($bdd, 'SELECT * FROM commentaires');
+            $requete = mysqli_query($bdd, "SELECT commentaires.commentaire, commentaires.date, utilisateurs.login FROM utilisateurs INNER JOIN commentaires WHERE utilisateurs.id = commentaires.id_utilisateur");
             $comment = mysqli_fetch_all($requete, MYSQLI_ASSOC);
-            // var_dump($comment);
                 foreach($comment as $valeur => $commentaires){
-                echo '<div id ="table">
-                                <table>
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                <td>'. $commentaires['commentaire'].' '.$commentaires['date'].'</td>
-                                </tbody>
-                            </table>
-                        </div>';
+                    echo '<div id ="table">
+                                    <table>
+                                    <thead>
+                                        <tr>
+                                            <th>'.$commentaires['login'].'</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <td>'. $commentaires['commentaire'].' '.'Poster le'.' '.date_format(date_create($commentaires['date']), 'd/m/Y H:i:s').'</td>
+                                    </tbody>
+                                </table>
+                            </div>';
+                }
+                if(empty($_SESSION)){
+                    echo '  <div class="centre">
+                                <a href="connexion.php"><input id ="livre" type="submit" name= submit value="connecter vous ou inscrivez-vous pour poster un commentaires"></a>
+                            </div>';
+                }
+                else{
+                    echo   '<div class="centre">
+                                <a href="commentaire.php"><input id ="livre" type="submit" name= submit value="Poster un commentaires"></a>
+                            </div>';
                 }
         ?>
 </main>

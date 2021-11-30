@@ -1,31 +1,6 @@
 <?php
 session_start();
-
-$bdd = mysqli_connect('localhost','root','','moduleconnexion');
-                mysqli_set_charset($bdd, 'utf8');
-                if (!empty($_POST)){
-                    if (isset($_POST['login']) && isset($_POST['password']) && !empty($_POST['login']) && !empty($_POST['password'])){
-                        $login = $_POST['login'];
-                        $password = $_POST['password'];
-                        $sql = "SELECT * FROM utilisateurs WHERE login = '$login'";
-                        $req = mysqli_query($bdd, $sql);
-                        $utilisateurs = mysqli_fetch_all($req, MYSQLI_ASSOC);
-                        if (count($utilisateurs) > 0){
-                            if(password_verify($password, $utilisateurs[0]['password']) || $password == $utilisateurs[0]['password']){
-                                $_SESSION['utilisateurs'] = [
-                                    'id' => $utilisateurs[0]['id'],
-                                    'login' => $utilisateurs[0]['login'],
-                                    'password' => $utilisateurs[0]['password'],
-                                ];
-                                header('Location: index.php');
-                                exit();
-                            }
-                        }
-                        else{
-                            echo "<h3>login ou password incorrect</h3>";
-                        }
-                    }
-                }?>
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,18 +12,51 @@ $bdd = mysqli_connect('localhost','root','','moduleconnexion');
 </head>
 <body>
 <header>
-    <h1><em>Demon Slayer</em></h1>
+    <h1><em>Connexion</em></h1>
         <ul>
             <li><a href="index.php">Accueil</a></li>
-            <li><a href="inscription.php">Inscription</a></li>
-            <li><a href="connexion.php">Connexion</a></li>'
-            <li><a href="commentaire.php">Commentaire</a></li>
             <li><a href="livre-or.php">Livre d'or</a></li>
-            <li><a href="profil.php">Mon profil</a></li>
+            <?php
+                if(empty($_SESSION)){
+                   echo '<li><a href="inscription.php">Inscription</a></li>';
+                }
+                else{
+                    echo '<li><a href="commentaire.php">Commentaire</a></li>
+                    <li><a href="profil.php">Mon profil</a></li>
+                    <li><a href="deconnexion.php">Deconnexion</a></li>';
+                }
+            ?>
         </ul>
     </header>
     <main>
+    <div class = "centre">
         <div class="inscription">
+                <?php
+                    $bdd = mysqli_connect('localhost','root','','livreor');
+                    mysqli_set_charset($bdd, 'utf8');
+                    if (!empty($_POST)){
+                        if (isset($_POST['login']) && isset($_POST['password']) && !empty($_POST['login']) && !empty($_POST['password'])){
+                            $login = $_POST['login'];
+                            $password = $_POST['password'];
+                            $sql = "SELECT * FROM utilisateurs WHERE login = '$login'";
+                            $req = mysqli_query($bdd, $sql);
+                            $utilisateurs = mysqli_fetch_all($req, MYSQLI_ASSOC);
+                            if (count($utilisateurs) > 0){
+                                if(password_verify($password, $utilisateurs[0]['password']) || $password == $utilisateurs[0]['password']){
+                                    $_SESSION['utilisateurs'] = [
+                                        'id' => $utilisateurs[0]['id'],
+                                        'login' => $utilisateurs[0]['login'],
+                                        'password' => $utilisateurs[0]['password'],
+                                    ];
+                                    header('Location: index.php');
+                                    exit();
+                                }
+                            }
+                        }
+                        else{
+                            echo "<h3>login ou password incorrect</h3>";
+                        }
+                }?>
                     <form action="connexion.php" method="post">
                             <label for="login">Login</label>
                             <input type="text" id="login" name="login">
@@ -58,7 +66,9 @@ $bdd = mysqli_connect('localhost','root','','moduleconnexion');
 
                             <input type="submit" value="connexion">
                     </form>
+                    <p>Si vous n'êtes pas inscrit <a href="inscription.php">inscrivez-vous !</a></p>
         </div>
+    </div>
     </main>
     <footer>
             <div>

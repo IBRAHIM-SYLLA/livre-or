@@ -1,28 +1,3 @@
-<?php
-            $bdd = mysqli_connect('localhost','root','','livreor');
-            mysqli_set_charset($bdd, 'utf8');
-            if (isset($_POST['login']) && isset($_POST['password'])){
-                $login = $_POST['login'];
-                $password = $_POST['password'];
-                    if ($password == $_POST['passconf']){
-                        $veriflogin = mysqli_query($bdd,"SELECT login FROM utilisateurs WHERE login = '$login'");
-                        $resultat = mysqli_fetch_all($veriflogin);
-                            if(count($resultat) == 0){
-                                $password = password_hash($password, PASSWORD_BCRYPT);
-                                $requete = mysqli_query($bdd,"INSERT INTO utilisateurs (login, password) VALUES ('$login', '$password')");
-                                header('Location: connexion.php');
-                            }
-                            else {
-                                echo "<h3>Login déjà utilisé !!!</h3>";
-                            }
-                    }
-                    else
-                    {
-                        echo '<h3>*Les mot de passes doivent êtres identiques !!!</h3>';
-                    }
-            }
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,18 +9,49 @@
 </head>
 <body>
 <header>
-    <h1><em>Demon Slayer</em></h1>
-        <ul>
+    <h1><em>Inscription</em></h1>
+    <ul>
             <li><a href="index.php">Accueil</a></li>
-            <li><a href="inscription.php">Inscription</a></li>
-            <li><a href="connexion.php">Connexion</a></li>'
-            <li><a href="commentaire.php">Commentaire</a></li>
             <li><a href="livre-or.php">Livre d'or</a></li>
-            <li><a href="profil.php">Mon profil</a></li>
+            <?php
+                if(empty($_SESSION)){
+                   echo '<li><a href="connexion.php">Connexion</a></li>';
+                }
+                else{
+                    echo '<li><a href="commentaire.php">Commentaire</a></li>
+                    <li><a href="profil.php">Mon profil</a></li>
+                    <li><a href="deconnexion.php">Deconnexion</a></li>';
+                }
+            ?>
         </ul>
     </header>
     <main>
+        <div class = "centre">
             <div class="inscription">
+            <?php
+                $bdd = mysqli_connect('localhost','root','','livreor');
+                mysqli_set_charset($bdd, 'utf8');
+                if (isset($_POST['login']) && isset($_POST['password'])){
+                    $login = $_POST['login'];
+                    $password = $_POST['password'];
+                        if ($password == $_POST['passconf']){
+                            $veriflogin = mysqli_query($bdd,"SELECT login FROM utilisateurs WHERE login = '$login'");
+                            $resultat = mysqli_fetch_all($veriflogin);
+                                if(count($resultat) == 0){
+                                    $password = password_hash($password, PASSWORD_BCRYPT);
+                                    $requete = mysqli_query($bdd,"INSERT INTO utilisateurs (login, password) VALUES ('$login', '$password')");
+                                    header('Location: connexion.php');
+                                }
+                                else {
+                                    echo "<h3>Login déjà utilisé !!!</h3>";
+                                }
+                        }
+                        else
+                        {
+                            echo '<h3>*Les mot de passes doivent êtres identiques !!!</h3>';
+                        }
+                }
+            ?>
                 <form action="inscription.php" method="post">
                         <label for="login">Login</label>
                         <input type="text" id="login" name="login">
@@ -58,7 +64,9 @@
 
                         <input type="submit" value="inscription">
                 </form>
+                <p>Si vous êtes déja inscrit <a href="connexion.php">connecter vous !</a></p>
             </div>
+        </div>
     </main>
     <footer>
             <div>
